@@ -40,9 +40,9 @@
             color: white;
             font-size: 1.2em;
             cursor: pointer;
-            display: none; /* Başlangıçta butonlar gizli */
+            display: none; /* Başlangıçta butonlar gizli olacak */
         }
-        #actor-section, #director-section {
+        #actor-section, #director-section, #submit-button {
             display: none; /* Diğer sorular gizli başlayacak */
         }
     </style>
@@ -79,21 +79,23 @@
         <input type="text" id="name" placeholder="Adınızı girin">
 
         <h2>Bu hikaye **Film mi, Dizi mi?** olmalı?</h2>
-        <select id="choice" onchange="showNextStep('actor-section')">
+        <select id="choice" onchange="showNextStep('next-button')">
             <option value="">Seçim yapın</option>
             <option value="Film">Film</option>
             <option value="Dizi">Dizi</option>
         </select>
+        <button id="next-button" onclick="showNextStep('actor-section')">Sonraki</button>
 
         <div id="actor-section">
             <h2>Kim Oynamalı? Oyuncu ismini #hashtag ile girin</h2>
-            <input type="text" id="actor" placeholder="#MelisaArelKimOlsun" onchange="showNextStep('director-section')">
+            <input type="text" id="actor" placeholder="#MelisaArelKimOlsun">
+            <button onclick="showNextStep('director-section')">Sonraki</button>
         </div>
 
         <div id="director-section">
             <h2>Yönetmen Kim Olmalı? Yönetmen ismini #hashtag ile girin</h2>
             <input type="text" id="director" placeholder="#YönetmenKimOlsun">
-            <button onclick="submitVote()">Oy Ver</button>
+            <button id="submit-button" onclick="submitVote()">Oy Ver</button>
         </div>
     </div>
 </body>
