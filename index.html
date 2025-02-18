@@ -3,38 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melisa ve Arel Kim Olsun?</title>
+    <title>Film mi, Dizi mi?</title>
+    <style>
+        body {
+            background: url('https://source.unsplash.com/1600x900/?cinema,movie') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 5px black;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            width: 50%;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        input, select, button {
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            border: none;
+            border-radius: 5px;
+        }
+        input, select {
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1em;
+        }
+        button {
+            background: red;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+    </style>
     <script>
-        async function vote() {
-            const character = document.getElementById('character').value;
+        async function submitVote() {
+            const user = document.getElementById('name').value;
+            const choice = document.getElementById('choice').value;
             const actor = document.getElementById('actor').value;
 
-            const response = await fetch('http://localhost:5000/vote', {
+            const response = await fetch('http://localhost:5000/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ character, actor })
+                body: JSON.stringify({ user, choice, actor })
             });
 
             const data = await response.json();
-            alert('Oy verildi!');
-        }
-
-        async function getResults() {
-            const response = await fetch('http://localhost:5000/results');
-            const data = await response.json();
-            document.getElementById('results').innerText = JSON.stringify(data, null, 2);
+            alert(data.message);
         }
     </script>
 </head>
 <body>
-    <h1>Melisa ve Arel Kim Olsun?</h1>
-    <select id="character">
-        <option value="Melisa">Melisa</option>
-        <option value="Arel">Arel</option>
-    </select>
-    <input type="text" id="actor" placeholder="Oyuncu ismi">
-    <button onclick="vote()">Oy Ver</button>
-    <button onclick="getResults()">Sonuçları Gör</button>
-    <pre id="results"></pre>
+    <h1>Film mi, Dizi mi? Karar Ver!</h1>
+    <div class="container">
+        <input type="text" id="name" placeholder="Adınızı girin">
+        <select id="choice">
+            <option value="Film">Film</option>
+            <option value="Dizi">Dizi</option>
+        </select>
+        <input type="text" id="actor" placeholder="Hangi oyuncu?">
+        <button onclick="submitVote()">Oy Ver</button>
+    </div>
 </body>
 </html>
