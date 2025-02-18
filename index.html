@@ -39,21 +39,25 @@
             }
         }
 
-        function submitVote() {
-            const name = document.getElementById('name').value;
+        async function submitVote() {
+            const user = document.getElementById('name').value;
             const choice = document.getElementById('choice').value;
             const actor = document.getElementById('actor').value;
             const director = document.getElementById('director').value;
 
-            if (!name || !choice || !actor || !director) {
+            if (!user || !choice || !actor || !director) {
                 alert("Lütfen tüm alanları doldurun.");
                 return;
             }
 
-            alert(`Teşekkürler ${name}! Seçiminiz alındı.\n
-            Seçim: ${choice}\n
-            Oyuncu Hashtag: ${actor}\n
-            Yönetmen Hashtag: ${director}`);
+            const response = await fetch('http://localhost:5000/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user, choice, actor, director })
+            });
+
+            const data = await response.json();
+            alert(data.message);
         }
     </script>
 </head>
