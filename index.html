@@ -40,23 +40,24 @@
             color: white;
             font-size: 1.2em;
             cursor: pointer;
-            display: none; /* Buton en başta gizli olacak */
+            display: none; /* Başlangıçta butonlar gizli */
         }
-        #actor-section {
-            display: none; /* İkinci soru en başta gizli olacak */
+        #actor-section, #director-section {
+            display: none; /* Diğer sorular gizli başlayacak */
         }
     </style>
     <script>
-        function showNextStep() {
-            document.getElementById("actor-section").style.display = "block"; // 2. soruyu göster
+        function showNextStep(step) {
+            document.getElementById(step).style.display = "block";
         }
 
         async function submitVote() {
             const user = document.getElementById('name').value;
             const choice = document.getElementById('choice').value;
             const actor = document.getElementById('actor').value;
+            const director = document.getElementById('director').value;
 
-            if (!user || !actor) {
+            if (!user || !actor || !director) {
                 alert("Lütfen tüm alanları doldurun.");
                 return;
             }
@@ -64,7 +65,7 @@
             const response = await fetch('http://localhost:5000/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user, choice, actor })
+                body: JSON.stringify({ user, choice, actor, director })
             });
 
             const data = await response.json();
@@ -76,18 +77,23 @@
     <h1>Film mi, Dizi mi? Karar Ver!</h1>
     <div class="container">
         <input type="text" id="name" placeholder="Adınızı girin">
-        
+
         <h2>Bu hikaye **Film mi, Dizi mi?** olmalı?</h2>
-        <select id="choice" onchange="showNextStep()">
+        <select id="choice" onchange="showNextStep('actor-section')">
             <option value="">Seçim yapın</option>
             <option value="Film">Film</option>
             <option value="Dizi">Dizi</option>
         </select>
 
         <div id="actor-section">
-            <h2>Melisa ve Arel’i kim oynamalı?</h2>
-            <input type="text" id="actor" placeholder="Oyuncu ismi">
-            <button onclick="submitVote()" style="display: block;">Oy Ver</button>
+            <h2>Kim Oynamalı? Oyuncu ismini #hashtag ile girin</h2>
+            <input type="text" id="actor" placeholder="#MelisaArelKimOlsun" onchange="showNextStep('director-section')">
+        </div>
+
+        <div id="director-section">
+            <h2>Yönetmen Kim Olmalı? Yönetmen ismini #hashtag ile girin</h2>
+            <input type="text" id="director" placeholder="#YönetmenKimOlsun">
+            <button onclick="submitVote()">Oy Ver</button>
         </div>
     </div>
 </body>
