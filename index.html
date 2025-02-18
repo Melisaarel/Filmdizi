@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melisa ve Arel Kim Olsun?</title>
+    <script>
+        async function vote() {
+            const character = document.getElementById('character').value;
+            const actor = document.getElementById('actor').value;
+
+            const response = await fetch('http://localhost:5000/vote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ character, actor })
+            });
+
+            const data = await response.json();
+            alert('Oy verildi!');
+        }
+
+        async function getResults() {
+            const response = await fetch('http://localhost:5000/results');
+            const data = await response.json();
+            document.getElementById('results').innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</head>
+<body>
+    <h1>Melisa ve Arel Kim Olsun?</h1>
+    <select id="character">
+        <option value="Melisa">Melisa</option>
+        <option value="Arel">Arel</option>
+    </select>
+    <input type="text" id="actor" placeholder="Oyuncu ismi">
+    <button onclick="vote()">Oy Ver</button>
+    <button onclick="getResults()">Sonuçları Gör</button>
+    <pre id="results"></pre>
+</body>
+</html>
