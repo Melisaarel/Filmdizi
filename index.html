@@ -32,33 +32,36 @@
         }
     </style>
     <script>
-        let votes = { film: 0, dizi: 0 };
-
-        function vote(choice) {
-            votes[choice]++;
-            document.getElementById("film-count").innerText = votes.film;
-            document.getElementById("dizi-count").innerText = votes.dizi;
+        async function vote(choice) {
             document.getElementById("next-step").classList.remove("hidden");
+
+            // Yüzde güncelleme
+            const response = await fetch("http://localhost:5000/results");
+            const data = await response.json();
+
+            document.getElementById("film-percent").innerText = `${data.filmPercentage}%`;
+            document.getElementById("dizi-percent").innerText = `${data.diziPercentage}%`;
         }
 
-        function submitVote() {
-            const melisa = document.getElementById('melisa').value;
-            const arel = document.getElementById('arel').value;
+        async function submitVote() {
+            const user = document.getElementById('name').value;
+            const choice = document.getElementById('choice').value;
+            const actor = document.getElementById('actor').value;
             const director = document.getElementById('director').value;
 
-            if (!melisa || !arel || !director) {
+            if (!user || !choice || !actor || !director) {
                 alert("Lütfen tüm alanları doldurun.");
                 return;
             }
 
-            const message = `🎬 *Melisa Arel: Film mi, Dizi mi?*\n\n
-            📊 Film Oy: ${votes.film} - Dizi Oy: ${votes.dizi}\n
-            🎭 *Melisa*: ${melisa}\n
-            🎭 *Arel*: ${arel}\n
-            🎬 *Yönetmen*: ${director}\n\n
-            📢 *Haydi paylaş!* #Melisayıkimoynasın #Arelkimolsun #YönetmenKimOlsun @melisaareli`;
+            const response = await fetch('http://localhost:5000/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user, choice, actor, director })
+            });
 
-            alert(message);
+            const data = await response.json();
+            alert(data.message);
         }
     </script>
 </head>
@@ -66,23 +69,17 @@
 
     <div class="container">
         <h1>Melisa Arel: Film mi, Dizi mi?</h1>
-        
-        <button onclick="vote('film')">Film</button> 
-        <span id="film-count">0</span>
-        
-        <button onclick="vote('dizi')">Dizi</button> 
-        <span id="dizi-count">0</span>
+
+        <button onclick="vote('Film')">Film</button> 
+        <span id="film-percent">0%</span>
+
+        <button onclick="vote('Dizi')">Dizi</button> 
+        <span id="dizi-percent">0%</span>
 
         <div id="next-step" class="hidden">
-            <h2>🎭 #Melisayıkimoynasın</h2>
-            <input type="text" id="melisa" placeholder="Melisa'yı kim oynasın?">
-
-            <h2>🎭 #Arelkimolsun</h2>
-            <input type="text" id="arel" placeholder="Arel'i kim oynasın?">
-
-            <h2>🎬 #YönetmenKimOlsun</h2>
-            <input type="text" id="director" placeholder="Yönetmen kim olsun?">
-
+            <input type="text" id="name" placeholder="Adınızı girin">
+            <input type="text" id="actor" placeholder="#MelisaArelKimOlsun">
+            <input type="text" id="director" placeholder="#YönetmenKimOlsun">
             <button onclick="submitVote()">Haydi Paylaş!</button>
         </div>
     </div>
